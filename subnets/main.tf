@@ -13,6 +13,6 @@ resource "aws_route_table" "main" {
   for_each = var.subnets
 
   tags = {
-    Name = "each.key"
+    Name = each.key
   }
 }
