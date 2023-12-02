@@ -27,12 +27,12 @@ resource "aws_nat_gateway" "ngw" {
   subnet_id       = element(local.public_subnet_ids, count.index)
 }
 resource "aws_route" "ngw" {
-  //for_each =  lookup(lookup(module.subnets,"public",null),"route_table_id",null)
-  count  = length(local.private_route_table_ids)
+  for_each                  = length(local.private_route_table_ids)
   route_table_id            = element(local.private_route_table_ids, count.index)
   destination_cidr_block    = "0.0.0.0/0"
-  nat_gateway_id            = element(aws_nat_gateway.ngw.*.id, count.index)
+  nat_gateway_id = element(aws_nat_gateway.ngw.*.id, count.index) 
 }
+
 resource "aws_eip" "ngw" {
   //for_each =  lookup(lookup(module.subnets,"public",null),"route_table_id",null)
   count    =  length(local.public_subnet_ids)
@@ -43,4 +43,18 @@ resource "aws_vpc_peering_connection" "peering" {
   peer_vpc_id   = aws_vpc.main.id
   vpc_id        = var.aws_default_vpc.id
   auto_accept   = true
+}
+
+resource "aws_route" "peer" {
+  //for_each =  lookup(lookup(module.subnets,"public",null),"route_table_id",null)
+  count                     = length(local.private_route_table_ids)
+  route_table_id            = element(local.private_route_table_ids, count.index)
+  destination_cidr_block    = var.default_vpc_cidr
+  vpc_peering_connection_id = aws_vpc_peering_connection.peering.id
+}
+resource "aws_route" "deafult_vpc_peer_entry" {
+  //for_each =  lookup(lookup(module.subnets,"public",null),"route_table_id",null)
+  route_table_id            = var.default_vpc_route_table_id
+  destination_cidr_block    = var.default_vpc_cidr
+  vpc_peering_connection_id = aws_vpc_peering_connection.peering.id
 }
