@@ -55,7 +55,7 @@ resource "aws_route" "peer" {
 resource "aws_route" "default_vpc_peer_entry" {
   //for_each =  lookup(lookup(module.subnets,"public",null),"route_table_id",null)
   route_table_id            = var.default_vpc_route_table_id
-  destination_cidr_block    = var.default_vpc_cidr
+  destination_cidr_block    = var.cidr
   vpc_peering_connection_id = aws_vpc_peering_connection.peering.id
 }
 resource "aws_instance" "main" {
