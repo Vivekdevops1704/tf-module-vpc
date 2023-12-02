@@ -60,7 +60,7 @@ resource "aws_route" "deafult_vpc_peer_entry" {
 }
 resource "aws_instance" "main" {
   instance_type = "t2.micro"
-  ami = "00e87074e52e6c9f9"
+  ami = "ami-00e87074e52e6c9f9"
   vpc_security_group_ids = aws_security_group.allow_tls.id
   subnet_id = local.app_subnet_id[0]
 }
