@@ -41,7 +41,7 @@ resource "aws_eip" "ngw" {
 
 resource "aws_vpc_peering_connection" "peering" {
   peer_vpc_id   = aws_vpc.main.id
-  vpc_id        = var.default_vpc.id
+  vpc_id        = var.default_vpc_id
   auto_accept   = true
 }
 
@@ -62,7 +62,7 @@ resource "aws_instance" "main" {
   instance_type = "t2.micro"
   ami = "ami-00e87074e52e6c9f9"
   vpc_security_group_ids = aws_security_group.allow_tls.id
-  subnet_id = local.app_subnet_id[0]
+  subnet_id = local.app_subnet_ids[0]
 }
 resource "aws_security_group" "allow_tls" {
   name        = "allow_tls"
